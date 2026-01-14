@@ -1,0 +1,328 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+}
+
+.game-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+.game-header {
+    margin-bottom: 20px;
+}
+
+.game-header h1 {
+    color: #4a5568;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.score {
+    color: #38a169;
+}
+
+.high-score {
+    color: #d69e2e;
+}
+
+.game-board {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+#gameCanvas {
+    border: 3px solid #4a5568;
+    border-radius: 10px;
+    background: #2d3748;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.game-controls {
+    margin-top: 20px;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #4299e1, #3182ce);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #3182ce, #2c5282);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #ed8936, #dd6b20);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(45deg, #dd6b20, #c05621);
+}
+
+.btn-gray {
+    background: linear-gradient(45deg, #a0aec0, #718096);
+    color: white;
+}
+
+.btn-gray:hover {
+    background: linear-gradient(45deg, #718096, #4a5568);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #f56565, #e53e3e);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(45deg, #e53e3e, #c53030);
+}
+
+.speed-control {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.speed-control label {
+    display: block;
+    font-weight: bold;
+    color: #4a5568;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.speed-control input[type="range"] {
+    width: 200px;
+    height: 8px;
+    border-radius: 5px;
+    background: #e2e8f0;
+    outline: none;
+    margin: 10px 0;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.speed-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4299e1, #3182ce);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.speed-control input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.speed-control input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4299e1, #3182ce);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+#speedValue {
+    font-weight: bold;
+    color: #3182ce;
+    font-size: 1.2em;
+    margin: 0 10px;
+    min-width: 40px;
+    display: inline-block;
+}
+
+.speed-control small {
+    color: #718096;
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.game-instructions {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.game-instructions h3 {
+    color: #4a5568;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.game-instructions ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.game-instructions li {
+    margin: 8px 0;
+    padding-left: 20px;
+    position: relative;
+    color: #718096;
+}
+
+.game-instructions li:before {
+    content: "🐍";
+    position: absolute;
+    left: 0;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h2 {
+    color: #e53e3e;
+    margin-bottom: 15px;
+    font-size: 2em;
+}
+
+.modal-content p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #4a5568;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.modal-buttons .btn {
+    margin: 0;
+    min-width: 100px;
+}
+
+@media (max-width: 768px) {
+    .game-container {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .game-header h1 {
+        font-size: 2em;
+    }
+    
+    #gameCanvas {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .control-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    #gameCanvas {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

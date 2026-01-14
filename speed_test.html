@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>速度控制测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .speed-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .result {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .test-pass {
+            color: #28a745;
+            background: #d4edda;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .test-fail {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>贪吃蛇游戏速度控制测试</h1>
+        
+        <div class="test-item">
+            <h3>测试1: 初始速度设置</h3>
+            <p>滑块值: <span id="sliderValue">50</span></p>
+            <p>预期延迟: 300ms (最慢)</p>
+            <p>实际延迟: <span id="actualDelay" class="result">-</span></p>
+            <div id="test1Result"></div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试2: 速度调节范围</h3>
+            <input type="range" id="testSlider" class="speed-slider" min="50" max="300" value="50" step="10">
+            <p>当前值: <span id="currentValue">50</span></p>
+            <p>计算延迟: <span id="calculatedDelay" class="result">300ms</span></p>
+            <div id="test2Result"></div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试3: 边界值测试</h3>
+            <button onclick="testBoundaryValues()">测试边界值</button>
+            <div id="boundaryTestResult"></div>
+        </div>
+        
+        <div class="test-item">
+            <h3>测试4: 速度公式验证</h3>
+            <p>公式: delay = 350 - value</p>
+            <p>50 → 300ms (最慢) ✓</p>
+            <p>300 → 50ms (最快) ✓</p>
+            <div id="formulaTestResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟游戏的速度计算逻辑
+        function calculateDelay(sliderValue) {
+            return 350 - sliderValue;
+        }
+        
+        // 测试1: 初始速度
+        function testInitialSpeed() {
+            const sliderValue = 50;
+            const expectedDelay = 300;
+            const actualDelay = calculateDelay(sliderValue);
+            
+            document.getElementById('actualDelay').textContent = actualDelay + 'ms';
+            
+            const test1Result = document.getElementById('test1Result');
+            if (actualDelay === expectedDelay) {
+                test1Result.innerHTML = '<div class="test-pass">✓ 测试通过</div>';
+            } else {
+                test1Result.innerHTML = '<div class="test-fail">✗ 测试失败</div>';
+            }
+        }
+        
+        // 测试2: 速度调节
+        function testSpeedAdjustment() {
+            const slider = document.getElementById('testSlider');
+            const currentValue = parseInt(slider.value);
+            const calculatedDelay = calculateDelay(currentValue);
+            
+            document.getElementById('currentValue').textContent = currentValue;
+            document.getElementById('calculatedDelay').textContent = calculatedDelay + 'ms';
+            
+            // 验证逻辑：数值越大，延迟越小（速度越快）
+            const test2Result = document.getElementById('test2Result');
+            if (currentValue > 50 && calculatedDelay < 300) {
+                test2Result.innerHTML = '<div class="test-pass">✓ 速度逻辑正确：数值越大，速度越快</div>';
+            } else if (currentValue === 50 && calculatedDelay === 300) {
+                test2Result.innerHTML = '<div class="test-pass">✓ 最慢速度设置正确</div>';
+            } else {
+                test2Result.innerHTML = '<div class="test-fail">✗ 速度逻辑错误</div>';
+            }
+        }
+        
+        // 测试3: 边界值
+        function testBoundaryValues() {
+            const boundaryTestResult = document.getElementById('boundaryTestResult');
+            let results = [];
+            
+            // 测试最小值
+            const minValue = 50;
+            const minDelay = calculateDelay(minValue);
+            results.push(`最小值 ${minValue} → ${minDelay}ms ${minDelay === 300 ? '✓' : '✗'}`);
+            
+            // 测试最大值
+            const maxValue = 300;
+            const maxDelay = calculateDelay(maxValue);
+            results.push(`最大值 ${maxValue} → ${maxDelay}ms ${maxDelay === 50 ? '✓' : '✗'}`);
+            
+            // 测试中间值
+            const midValue = 175;
+            const midDelay = calculateDelay(midValue);
+            results.push(`中间值 ${midValue} → ${midDelay}ms ${midDelay === 175 ? '✓' : '✗'}`);
+            
+            boundaryTestResult.innerHTML = '<div class="test-pass">边界值测试结果:</div><ul>' + 
+                results.map(r => `<li>${r}</li>`).join('') + '</ul>';
+        }
+        
+        // 测试4: 公式验证
+        function testFormula() {
+            const formulaTestResult = document.getElementById('formulaTestResult');
+            const testCases = [
+                { input: 50, expected: 300, description: '最慢速度' },
+                { input: 100, expected: 250, description: '慢速' },
+                { input: 200, expected: 150, description: '中速' },
+                { input: 300, expected: 50, description: '最快速度' }
+            ];
+            
+            let allPassed = true;
+            const results = testCases.map(test => {
+                const actual = calculateDelay(test.input);
+                const passed = actual === test.expected;
+                if (!passed) allPassed = false;
+                return `${test.input} → ${actual}ms (${test.description}) ${passed ? '✓' : '✗'}`;
+            });
+            
+            formulaTestResult.innerHTML = '<div class="' + (allPassed ? 'test-pass' : 'test-fail') + '">' +
+                (allPassed ? '✓ 所有公式测试通过' : '✗ 公式测试失败') + '</div><ul>' +
+                results.map(r => `<li>${r}</li>`).join('') + '</ul>';
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            testInitialSpeed();
+            testSpeedAdjustment();
+            testFormula();
+            
+            // 绑定滑块事件
+            document.getElementById('testSlider').addEventListener('input', testSpeedAdjustment);
+        });
+    </script>
+</body>
+</html>

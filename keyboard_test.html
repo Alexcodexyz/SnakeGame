@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>键盘测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .key-display {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+        .key-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .info-item {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .info-value {
+            color: #007bff;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .instructions {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .test-status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .test-pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>键盘方向键测试</h1>
+        
+        <div class="instructions">
+            <strong>使用说明:</strong> 按下键盘上的任意方向键（↑↓←→）来测试按键是否正常工作。
+        </div>
+        
+        <div class="key-display" id="keyDisplay">
+            请按任意方向键...
+        </div>
+        
+        <div class="key-info">
+            <div class="info-item">
+                <div class="info-label">按键码</div>
+                <div class="info-value" id="keyCode">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">按键名称</div>
+                <div class="info-value" id="keyName">-</div>
+            </div>
+        </div>
+        
+        <div class="test-status" id="testStatus">
+            等待按键测试...
+        </div>
+        
+        <h3>方向键对照表:</h3>
+        <ul>
+            <li>↑ 上方向键: keyCode = 38</li>
+            <li>↓ 下方向键: keyCode = 40</li>
+            <li>← 左方向键: keyCode = 37</li>
+            <li>→ 右方向键: keyCode = 39</li>
+        </ul>
+        
+        <h3>测试结果:</h3>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        const keyDisplay = document.getElementById('keyDisplay');
+        const keyCodeDisplay = document.getElementById('keyCode');
+        const keyNameDisplay = document.getElementById('keyName');
+        const testStatus = document.getElementById('testStatus');
+        const testResults = document.getElementById('testResults');
+        
+        const arrowKeys = {
+            37: { name: '← 左方向键', symbol: '←' },
+            38: { name: '↑ 上方向键', symbol: '↑' },
+            39: { name: '→ 右方向键', symbol: '→' },
+            40: { name: '↓ 下方向键', symbol: '↓' }
+        };
+        
+        const testResultsData = {
+            37: false, // 左
+            38: false, // 上
+            39: false, // 右
+            40: false  // 下
+        };
+        
+        let testStartTime = Date.now();
+        
+        function updateDisplay(keyCode, keyName, symbol) {
+            keyDisplay.innerHTML = `<div style="font-size: 48px;">${symbol}</div>`;
+            keyCodeDisplay.textContent = keyCode;
+            keyNameDisplay.textContent = keyName;
+            testStatus.textContent = '按键检测正常！';
+            testStatus.className = 'test-status test-pass';
+        }
+        
+        function updateResults() {
+            const results = Object.keys(testResultsData).map(keyCode => {
+                const code = parseInt(keyCode);
+                const keyInfo = arrowKeys[code];
+                const status = testResultsData[code] ? '✅ 正常' : '❌ 未测试';
+                return `<div>${keyInfo.symbol} ${keyInfo.name}: ${status}</div>`;
+            }).join('');
+            
+            testResults.innerHTML = results;
+            
+            // 检查是否所有按键都已测试
+            const allTested = Object.values(testResultsData).every(result => result === true);
+            if (allTested) {
+                testStatus.textContent = '🎉 所有方向键测试通过！';
+                testStatus.className = 'test-status test-pass';
+                const elapsedTime = ((Date.now() - testStartTime) / 1000).toFixed(1);
+                testResults.innerHTML += `<div style="margin-top: 15px; font-weight: bold; color: #28a745;">测试完成！用时: ${elapsedTime}秒</div>`;
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            const keyCode = event.keyCode;
+            
+            // 只处理方向键
+            if (arrowKeys[keyCode]) {
+                event.preventDefault(); // 防止页面滚动
+                
+                const keyInfo = arrowKeys[keyCode];
+                updateDisplay(keyCode, keyInfo.name, keyInfo.symbol);
+                
+                // 标记为已测试
+                testResultsData[keyCode] = true;
+                updateResults();
+                
+                // 播放按键音效（如果支持）
+                try {
+                    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+                    audio.volume = 0.3;
+                    audio.play().catch(() => {});
+                } catch (e) {
+                    // 忽略音频错误
+                }
+            }
+        });
+        
+        // 初始化显示
+        updateResults();
+        
+        // 5秒后提醒用户开始测试
+        setTimeout(() => {
+            if (!Object.values(testResultsData).some(result => result === true)) {
+                testStatus.textContent = '⏰ 请按下方向键开始测试...';
+                testStatus.className = 'test-status';
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
